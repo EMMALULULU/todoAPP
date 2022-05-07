@@ -1,0 +1,22 @@
+.todo-form {
+  margin: 20px auto;
+  padding: 5px;
+  width: 55%;
+}
+.list {
+  background-color: white;
+  padding: 25px;
+}
+.remove-todo-button {
+  padding: 0.2px;
+  margin-left: 7px;
+}
+.todo-check {
+}
+
+.todo-check > label {
+  margin-right: 12px;
+}
+/* .remove-todo-button:hover {
+  color: 'red';
+} */
