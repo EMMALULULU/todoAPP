@@ -2,12 +2,30 @@
 
 module.exports = async (event, context, cb, prisma) => {
   const { username, password } = event.body;
+  
+  if (!username || !password) {
+    return context.status(400)
+    .succeed({
+      statusCode: 400,
+      message: "Please provide username and password"
+    })
+  }
 
   const user = await prisma.user.findUnique({
+    include: {
+      todolist: { select: { todoitems: true } },
+    },
     where: {
-      username,
+      username
     },
   })
+
+  if (!user) {
+    return context.status(404).succeed({
+      code: 404,
+      message: "User not found!"
+    })
+  }
 
   const isMatchedPassword = user.password === password;
 
@@ -20,7 +38,10 @@ module.exports = async (event, context, cb, prisma) => {
 
   user.password = undefined;
 
-  return context.status(200).succeed({ username: user.username })
+  return context.status(200).succeed({
+    statusCode: 200,
+    data: user
+  })
 
 
 

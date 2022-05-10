@@ -1,56 +1,61 @@
-'use strict'
+'use strict';
 
 module.exports = async (event, context, cb, prisma) => {
-  const { id, data } = event.body;
+  const { username, todolist: newlist } = event.body;
 
-  const todolist = await prisma.todolist.findUnique({
-    include: {
-      user: true,
-      todoitems: true
-    },
-    where: {
-      id,
-    },
-  })
-
-  // if no todolist found
-  if (!todolist) {
-    return context.status(404).succeed({
-      code: 404,
-      message: "Todolist not found!"
-    })
+  if (!username || !newlist) {
+    return context.status(400).succeed({
+      statusCode: 400,
+      message: 'Please provide username and todolist object',
+    });
   }
 
-  const { name, todoitems } = data;
+  const user = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  if (!user) {
+    return context.status(404).succeed({
+      code: 404,
+      message: 'User not found!',
+    });
+  }
+
+  const todolist = await prisma.todolist.findUnique({
+    where: {
+      userId: user.id,
+    },
+  });
 
   // Delete all old todoitems
   await prisma.todoitem.deleteMany({
-    where: { todolistid: id },
-  })
+    where: { todolistid: todolist.id },
+  });
 
   // create new todoitem
-  for (let todoitem of todoitems) {
-      await prisma.todoitem.create({
-        data: {
-          ...todoitem,
-          todolistid: id,
-        },
-      })
+  for (let todoitem of newlist.todoitems) {
+    todoitem.id = undefined;
+    await prisma.todoitem.create({
+      data: {
+        ...todoitem,
+        todolistid: todolist.id,
+      },
+    });
   }
 
-  // update the list itself
-  const newState = await prisma.todolist.update({
+  const newState = await prisma.user.findUnique({
     include: {
-      user: true,
-      todoitems: true
+      todolist: { select: { todoitems: true } },
     },
-    where: { id },
-    data: { name },
-  })
-
+    where: {
+      username,
+    },
+  });
 
   return context.status(200).succeed({
     code: 200,
-    data: newState
-  })
-}
+    data: newState,
+  });
+};
