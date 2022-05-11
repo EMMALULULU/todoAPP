@@ -5,7 +5,10 @@ export const createAccountAsync = createAsyncThunk(
   'todos/createAccountAsync',
   async (payload) => {
     try {
-      const response = await axios.post('/function/register', payload);
+      const response = await axios.post(
+        'http://faas.todolist.hkust.com/function/register',
+        payload
+      );
       const { data } = response;
       console.log(data);
       if (data.statusCode === 200) {

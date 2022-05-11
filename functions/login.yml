@@ -6,5 +6,4 @@ functions:
   login:
     lang: node17
     handler: ./login
-    image: localhost:5000/login:latest
-
+    image: emmalululu/login:latest

@@ -5,7 +5,10 @@ export const updateTodoListAsync = createAsyncThunk(
   'todos/updateTodoListAsync',
   async (payload) => {
     try {
-      const response = await axios.post('function/update-todolist', payload);
+      const response = await axios.post(
+        'http://faas.todolist.hkust.com/function/update-todolist',
+        payload
+      );
       console.log(response);
     } catch (error) {
       console.log(error);

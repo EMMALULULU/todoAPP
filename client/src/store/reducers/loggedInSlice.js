@@ -5,7 +5,10 @@ export const getLoginAsync = createAsyncThunk(
   'todos/getLoginAsync',
   async (payload) => {
     try {
-      const response = await axios.post('/function/login', payload);
+      const response = await axios.post(
+        'http://faas.todolist.hkust.com/function/login',
+        payload
+      );
 
       if (response.status === 200) {
         console.log(response.data.data);

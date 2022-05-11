@@ -6,5 +6,4 @@ functions:
   update-todolist:
     lang: node17
     handler: ./update-todolist
-    image: localhost:5000/update-todolist:latest
-
+    image: emmalululu/update-todolist:latest

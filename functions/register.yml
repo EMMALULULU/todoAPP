@@ -6,5 +6,4 @@ functions:
   register:
     lang: node17
     handler: ./register
-    image: localhost:5000/register:latest
-
+    image: emmalululu/register:latest

@@ -48,6 +48,10 @@ export default function App() {
             path="/todo"
             element={isLoggedIn ? <Todo /> : <Navigate to="/" />}
           />
+          <Route
+            path="*"
+            element={isLoggedIn ? <Todo /> : <Navigate to="/" />}
+          />
         </Routes>
       </Content>
     </Layout>
