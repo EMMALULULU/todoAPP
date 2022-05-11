@@ -24,11 +24,11 @@ sleep 40
 
 # deploy Server app 
 echo "Deploying Front end server to kubernetes cluster"
-kubectl apply -f server
+kubectl apply -f server/server-k8s.yml
 sleep 60
 
 # login faas-cli to control portal
-# brew install faas-cli
+brew install faas-cli
 faas-cli login -u admin -p admin -g "http://127.0.0.1:31112"
 sleep 10
 faas-cli list -g "http://127.0.0.1:31112"
