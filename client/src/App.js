@@ -9,13 +9,14 @@ import Todo from './todos/pages/Todo';
 import Signup from './users/pages/Signup';
 import Signin from './users/pages/Signin';
 
+import { LogoutOutlined } from '@ant-design/icons';
 import './App.css';
+import { Footer } from 'antd/lib/layout/layout';
 export default function App() {
   const dispatch = useDispatch();
   const { Header, Content } = Layout;
   const loggedInUser = useSelector((state) => state.loggedIn);
-  const isLoggedIn = loggedInUser.username !== undefined;
-  console.log('APP', isLoggedIn);
+  const isLoggedIn = loggedInUser.user !== undefined;
 
   const logoutHandler = () => {
     dispatch(reset());
@@ -27,8 +28,13 @@ export default function App() {
           <div className="nav">
             <h1
               style={{ color: 'white' }}
-            >{`Hello ${loggedInUser.username} 👋`}</h1>{' '}
-            <Button danger onClick={logoutHandler}>
+            >{`Hello ${loggedInUser.user.username} 👋`}</h1>
+            <Button
+              shape="round"
+              danger
+              onClick={logoutHandler}
+              icon={<LogoutOutlined />}
+            >
               LOG OUT
             </Button>
           </div>

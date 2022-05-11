@@ -6,9 +6,10 @@ export const getLoginAsync = createAsyncThunk(
   async (payload) => {
     try {
       const response = await axios.post('/function/login', payload);
-      console.log(response);
+
       if (response.status === 200) {
-        return { username: response.data.username };
+        console.log(response.data.data);
+        return { user: response.data.data };
       }
     } catch (error) {
       console.log(error.response.data.message);
@@ -23,11 +24,17 @@ const loggedInSlice = createSlice({
     reset: (state, action) => {
       return {};
     },
+    clearResponse: (state, action) => {
+      if (state.responseStatus === undefined) {
+        return state;
+      }
+      return {};
+    },
   },
   extraReducers: {
     [getLoginAsync.fulfilled]: (state, action) => {
-      if (action.payload.username !== undefined) {
-        const newLoggedIn = { username: action.payload.username };
+      if (action.payload.user !== undefined) {
+        const newLoggedIn = { user: action.payload.user };
         return newLoggedIn;
       }
 
@@ -35,5 +42,5 @@ const loggedInSlice = createSlice({
     },
   },
 });
-export const { reset } = loggedInSlice.actions;
+export const { reset, clearResponse } = loggedInSlice.actions;
 export default loggedInSlice.reducer;

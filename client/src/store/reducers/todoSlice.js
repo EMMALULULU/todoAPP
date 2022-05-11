@@ -1,18 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit';
-import {}
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+export const updateTodoListAsync = createAsyncThunk(
+  'todos/updateTodoListAsync',
+  async (payload) => {
+    try {
+      const response = await axios.post('function/update-todolist', payload);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const todoSlice = createSlice({
   name: 'todos',
-  initialState: [
-    { id: 1, content: 'todo1', isCompleted: false },
-    { id: 2, content: 'todo2', isCompleted: false },
-    { id: 3, content: 'todo3', isCompleted: true },
-  ],
+  initialState: [],
   reducers: {
+    getTodoList: (state, action) => {
+      const newTodoList = action.payload;
+      return newTodoList;
+    },
     addTodo: (state, action) => {
       const newTodo = {
         id: Math.random(),
-        content: action.payload.content,
-        isCompleted: false,
+        name: action.payload.name,
+        completed: false,
       };
       state.push(newTodo);
     },
@@ -21,14 +34,17 @@ const todoSlice = createSlice({
     },
     toggleComplete: (state, action) => {
       const index = state.findIndex((todo) => todo.id === action.payload.id);
-      state[index].isCompleted = action.payload.isCompleted;
+      state[index].completed = action.payload.completed;
     },
     editTodo: (state, action) => {
       const index = state.findIndex((todo) => todo.id === action.payload.id);
-      state[index].content = action.payload.content;
+      state[index].name = action.payload.name;
     },
   },
+  extraReducers: {
+    [updateTodoListAsync.fulfilled]: (state, action) => {},
+  },
 });
-export const { addTodo, toggleComplete, deleteTodo, editTodo } =
+export const { addTodo, toggleComplete, deleteTodo, editTodo, getTodoList } =
   todoSlice.actions;
 export default todoSlice.reducer;

@@ -2,28 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getLoginAsync, reset } from '../../store/reducers/loggedInSlice';
+import {
+  getLoginAsync,
+  clearResponse,
+} from '../../store/reducers/loggedInSlice';
 import AlertPop from '../../shared/AlertPop';
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loggedInStatus = useSelector((state) => state.loggedIn);
   const [alertStatus, setAlertStatus] = useState({
-    isSucceed: loggedInStatus.username !== undefined,
+    isSucceed: loggedInStatus.user !== undefined,
     showAlert: false,
   });
+
   useEffect(() => {
-    if (loggedInStatus.username !== undefined) {
+    if (loggedInStatus.user !== undefined) {
       setAlertStatus({ isSucceed: true, showAlert: false });
       navigate('/todo');
     } else if (loggedInStatus.responseStatus) {
       setAlertStatus({ isSucceed: false, showAlert: true });
     }
   }, [loggedInStatus]);
-  useEffect(
-    () => () => setAlertStatus({ isSucceed: true, showAlert: false }),
-    []
-  );
+
+  useEffect(() => () => clearResponse(), []);
 
   const onFinish = (values: any) => {
     dispatch(
@@ -34,16 +36,17 @@ export default function Login() {
     console.log('Failed:', errorInfo);
   };
   const onClose = () => {
-    dispatch(reset());
+    dispatch(clearResponse());
   };
-  const alertContent = alertStatus.showAlert && (
-    <AlertPop
-      message={alertStatus.isSucceed ? 'Log in Succeed' : 'Log in Failed'}
-      description={loggedInStatus.responseStatus}
-      type={alertStatus.isSucceed ? 'success' : 'error'}
-      onClose={onClose}
-    />
-  );
+  const alertContent = alertStatus.showAlert &&
+    loggedInStatus.responseStatus !== undefined && (
+      <AlertPop
+        message={alertStatus.isSucceed ? 'Log in Succeed' : 'Log in Failed'}
+        description={loggedInStatus.responseStatus}
+        type={alertStatus.isSucceed ? 'success' : 'error'}
+        onClose={onClose}
+      />
+    );
 
   return (
     <>

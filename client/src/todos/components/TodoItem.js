@@ -14,13 +14,13 @@ export default function TodoItem(props) {
 
   const [todoItem, setTodoItem] = useState({
     showInput: false,
-    todo: props.content,
+    todo: props.name,
   });
 
   const inputEl = useRef();
 
   const showInputHandler = () => {
-    if (!props.isCompleted) {
+    if (!props.completed) {
       setTodoItem((prev) => {
         return { ...prev, showInput: true };
       });
@@ -37,17 +37,20 @@ export default function TodoItem(props) {
     });
   };
   const toggleIsCompletedHandler = () => {
-    dispatch(toggleComplete({ id: props.id, isCompleted: !props.isCompleted }));
+    dispatch(toggleComplete({ id: props.id, completed: !props.completed }));
+    props.onUpdate(true);
   };
   const deleteTodoHandler = () => {
     dispatch(deleteTodo({ id: props.id }));
+    props.onUpdate(true);
   };
 
   const updateTodo = () => {
     if (todoItem.todo.length > 0) {
-      dispatch(editTodo({ id: props.id, content: todoItem.todo }));
+      dispatch(editTodo({ id: props.id, name: todoItem.todo }));
       closeInputHandler();
     }
+    props.onUpdate(true);
   };
   return (
     <List.Item>
@@ -55,16 +58,16 @@ export default function TodoItem(props) {
         <Checkbox
           onClick={toggleIsCompletedHandler}
           disabled={todoItem.showInput}
-          checked={props.isCompleted}
+          checked={props.completed}
         />
         {!todoItem.showInput && (
           <Tag
             onClick={showInputHandler}
-            color={`${props.isCompleted ? 'gold' : 'cyan'}`}
+            color={`${props.completed ? 'gold' : 'cyan'}`}
             className="todo-tag site-tag-plus"
-            style={props.isCompleted && { textDecoration: 'line-through' }}
+            style={props.completed && { textDecoration: 'line-through' }}
           >
-            {props.content}
+            {props.name}
           </Tag>
         )}
         {todoItem.showInput && (

@@ -4,7 +4,7 @@ import { addTodo } from '../../store/reducers/todoSlice';
 import { Form, Row, Col, Button, Input } from 'antd';
 import './todoForm.css';
 
-export default function AddTodo() {
+export default function AddTodo(props) {
   const [todo, setTodo] = useState('');
   const dispatch = useDispatch();
 
@@ -12,8 +12,10 @@ export default function AddTodo() {
     setTodo(e.target.value);
   };
   const addTodoHandler = () => {
-    dispatch(addTodo({ content: todo }));
+    console.log(todo);
+    dispatch(addTodo({ name: todo }));
     setTodo('');
+    props.onUpdate(true);
   };
   return (
     <div className="todo-form">

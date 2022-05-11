@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Checkbox, Card } from 'antd';
-import {
-  createAccountAsync,
-  reset,
-} from '../../store/reducers/userRegisterSlice';
+import { createAccountAsync, reset } from '../../store/reducers/registerSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';

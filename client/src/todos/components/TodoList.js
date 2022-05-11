@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Button, List } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  getTodoList,
+  updateTodoListAsync,
+} from '../../store/reducers/todoSlice';
 import './todoForm.css';
 import TodoItem from './TodoItem';
+import { SaveOutlined } from '@ant-design/icons';
 
-export default function TodoList() {
+export default function TodoList(props) {
+  const dispatch = useDispatch();
+  const initData = useSelector((state) => state.loggedIn);
   const todos = useSelector((state) => state.todos);
-  console.log(todos);
-  const addTodoHandler = () => {};
+
+  useEffect(() => {
+    // console.log('get todo list');
+    const retrievedTodoList = initData.user.todolist.todoitems;
+    // console.log(retrievedTodoList);
+    dispatch(getTodoList(retrievedTodoList));
+  }, []);
+
+  const SaveTodoListHandler = () => {
+    const newDataObject = { ...initData.user, todolist: { todoitems: todos } };
+    dispatch(updateTodoListAsync(newDataObject));
+    props.onUpdate(false);
+  };
+
   return (
     <div className="todo-form list">
       <List
@@ -16,14 +35,26 @@ export default function TodoList() {
         dataSource={todos}
         renderItem={(item) => (
           <TodoItem
-            onAdd={addTodoHandler}
             key={item.id}
             id={item.id}
-            content={item.content}
-            isCompleted={item.isCompleted}
+            name={item.name}
+            completed={item.completed}
+            onUpdate={props.onUpdate}
           />
         )}
       />
+      {props.showSave && (
+        <Button
+          className="button"
+          type="primary"
+          shape="round"
+          ghost
+          icon={<SaveOutlined />}
+          onClick={SaveTodoListHandler}
+        >
+          Save Changes
+        </Button>
+      )}
     </div>
   );
 }
